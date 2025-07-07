@@ -677,7 +677,7 @@ const HomePage = () => {
                       sx={{ 
                         textAlign: 'center',
                         mb: 3,
-                        color: theme.palette.primary.main,
+                        color: theme.palette.secondary.main,
                         fontWeight: 800
                       }}
                     >
@@ -708,8 +708,8 @@ const HomePage = () => {
                         variant={membership.popular ? "contained" : "outlined"}
                         size="large"
                         sx={{
-                          backgroundColor: membership.popular ? theme.palette.secondary.main : 'transparent',
-                          color: membership.popular ? theme.palette.secondary.contrastText : theme.palette.primary.main,
+                          backgroundColor: membership.popular ? theme.palette.secondary.main : theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
                           borderColor: theme.palette.primary.main,
                           py: 1.5,
                           fontWeight: 700,

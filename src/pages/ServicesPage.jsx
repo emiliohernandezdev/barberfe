@@ -10,268 +10,275 @@ import {
   CardContent,
   CardMedia,
   Chip,
-  Divider,
   Tabs,
   Tab,
-  Paper
+  Paper,
+  Avatar,
+  Badge,
+  IconButton
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { ShoppingCart,  Spa } from '@mui/icons-material';
+import {
+  ShoppingCart,
+  Favorite,
+  Star,
+  CalendarToday,
+  AccessTime
+} from '@mui/icons-material';
 
 const ServicesPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [tabValue, setTabValue] = useState(0);
+  const [activeTab, setActiveTab] = useState('services');
+  const [wishlist, setWishlist] = useState([]);
 
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+  const toggleWishlist = (productId) => {
+    setWishlist(prev => 
+      prev.includes(productId) 
+        ? prev.filter(id => id !== productId) 
+        : [...prev, productId]
+    );
   };
 
-  const services = [
+  // Datos mejorados
+  const servicesData = [
     {
       id: 1,
-      title: "Corte Clásico",
-      description: "Corte tradicional con tijeras y máquina, terminado con navaja y productos premium.",
-      duration: "45 min",
-      price: 25,
-      icon: <Spa fontSize="large" color="primary" />
+      title: "Master Cut",
+      description: "Corte de precisión con acabado premium incluyendo tratamiento térmico y acabado con navaja.",
+      duration: 60,
+      price: 45,
+      rating: 4.9,
+      icon: <Star />,
+      category: "Corte"
     },
-    {
-      id: 2,
-      title: "Arreglo de Barba",
-      description: "Afeitado con toalla caliente, aceites esenciales y terminado con navaja.",
-      duration: "30 min",
-      price: 20,
-      icon: <Spa fontSize="large" color="primary" />
-    },
-    {
-      id: 3,
-      title: "Tratamiento Capilar",
-      description: "Hidratación profunda para el cabello con productos profesionales.",
-      duration: "30 min",
-      price: 30,
-      icon: <Spa fontSize="large" color="primary" />
-    },
-    {
-      id: 4,
-      title: "Completo VIP",
-      description: "Corte + Barba + Mascarilla revitalizante + Masaje capilar.",
-      duration: "90 min",
-      price: 60,
-      icon: <Spa fontSize="large" color="primary" />
-    }
+    // ... más servicios
   ];
 
-  const products = [
+  const productsData = [
     {
-      id: 1,
-      name: "Cera Modeladora Premium",
-      description: "Fijación fuerte con acabado mate. Ideal para estilos modernos.",
-      price: 15.99,
-      category: "Estilización",
-      image: "/productos/cera.jpg"
-    },
-    {
-      id: 2,
-      name: "Aceite para Barba",
-      description: "Hidrata y suaviza la barba con aceites naturales de argán y jojoba.",
-      price: 18.50,
+      id: 101,
+      name: "Elixir Beard Serum",
+      description: "Suero regenerador con aceite de argán y vitamina E para barbas más fuertes y sedosas.",
+      price: 28.99,
       category: "Barba",
-      image: "/productos/aceite-barba.jpg"
+      rating: 4.7,
+      image: "/products/beard-serum.jpg",
+      isNew: true
     },
-    {
-      id: 3,
-      name: "Minoxidil Forte",
-      description: "Tratamiento para crecimiento y fortalecimiento del vello facial.",
-      price: 24.99,
-      category: "Crecimiento",
-      image: "/productos/minoxidil.jpg"
-    },
-    {
-      id: 4,
-      name: "Shampoo Anticaspa",
-      description: "Limpia profundamente sin resecar el cuero cabelludo.",
-      price: 12.99,
-      category: "Cuidado",
-      image: "/productos/shampoo.jpg"
-    },
-    {
-      id: 5,
-      name: "Pasta Modeladora",
-      description: "Textura flexible con acabado natural. Control medio.",
-      price: 14.99,
-      category: "Estilización",
-      image: "/productos/pasta.jpg"
-    },
-    {
-      id: 6,
-      name: "Bálsamo para Barba",
-      description: "Nutre e hidrata la barba con manteca de karité y vitamina E.",
-      price: 16.99,
-      category: "Barba",
-      image: "/productos/balsamo.jpg"
-    }
+    // ... más productos
   ];
-
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
 
   return (
-    <Box sx={{ py: 6, bgcolor: theme.palette.background.default }}>
-      <Container maxWidth="lg">
-        {/* Encabezado */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeInUp}
-        >
-          <Typography
-            variant="h2"
-            sx={{
-              textAlign: 'center',
-              mb: 2,
-              color: theme.palette.text.primary,
-              position: 'relative',
-              '&::after': {
-                content: '""',
-                display: 'block',
-                width: '80px',
-                height: '4px',
-                background: theme.palette.secondary.main,
-                margin: '20px auto 0',
-                borderRadius: '2px'
-              }
-            }}
-          >
-            Nuestros Servicios y Productos
+    <Box sx={{
+      bgcolor: theme.palette.background.default,
+      minHeight: '100vh',
+      py: 8,
+      px: { xs: 2, sm: 4 }
+    }}>
+      <Container maxWidth="xl">
+        {/* Hero Header */}
+        <Box sx={{ 
+          textAlign: 'center', 
+          mb: 8,
+          position: 'relative'
+        }}>
+          <Typography variant="h3" sx={{
+            fontWeight: 800,
+            mb: 2,
+            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            display: 'inline-block'
+          }}>
+            Experiencia Barbería Premium
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              textAlign: 'center',
-              maxWidth: '700px',
-              mx: 'auto',
-              mb: 4,
-              color: theme.palette.text.secondary
-            }}
-          >
-            Descubre todo lo que ofrecemos para tu cuidado personal y lleva la experiencia de la barbería a tu hogar.
+          <Typography variant="h6" sx={{
+            color: theme.palette.text.secondary,
+            maxWidth: 700,
+            mx: 'auto',
+            mb: 4
+          }}>
+            Descubre nuestros servicios exclusivos y la mejor selección de productos profesionales
           </Typography>
-        </motion.div>
-
-        {/* Pestañas */}
-        <Paper sx={{ mb: 4, borderRadius: '12px', overflow: 'hidden' }}>
-          <Tabs
-            value={tabValue}
-            onChange={handleTabChange}
-            variant={isMobile ? "scrollable" : "fullWidth"}
-            scrollButtons="auto"
-            sx={{
-              '& .MuiTabs-indicator': {
-                backgroundColor: theme.palette.secondary.main,
-                height: '3px'
-              }
-            }}
-          >
-            <Tab 
-              label="Servicios" 
-              sx={{ 
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 2,
+            flexWrap: 'wrap'
+          }}>
+            <Button
+              variant={activeTab === 'services' ? 'contained' : 'outlined'}
+              onClick={() => setActiveTab('services')}
+              sx={{
+                borderRadius: '50px',
+                px: 4,
+                py: 1.5,
                 fontWeight: 600,
-                '&.Mui-selected': { color: theme.palette.text.primary }
-              }} 
-            />
-            <Tab 
-              label="Productos" 
-              sx={{ 
+                ...(activeTab === 'services' ? {
+                  bgcolor: theme.palette.primary.main,
+                  color: theme.palette.primary.contrastText,
+                  '&:hover': {
+                    bgcolor: theme.palette.primary.dark
+                  }
+                } : {
+                  borderColor: theme.palette.mode === 'dark' ? '#555' : '#ddd',
+                  color: theme.palette.text.primary,
+                  '&:hover': {
+                    borderColor: theme.palette.primary.main
+                  }
+                })
+              }}
+            >
+              Servicios
+            </Button>
+            <Button
+              variant={activeTab === 'products' ? 'contained' : 'outlined'}
+              onClick={() => setActiveTab('products')}
+              sx={{
+                borderRadius: '50px',
+                px: 4,
+                py: 1.5,
                 fontWeight: 600,
-                '&.Mui-selected': { color: theme.palette.text.primary }
-              }} 
-            />
-          </Tabs>
-        </Paper>
+                ...(activeTab === 'products' ? {
+                  bgcolor: theme.palette.primary.main,
+                  color: theme.palette.primary.contrastText,
+                  '&:hover': {
+                    bgcolor: theme.palette.primary.dark
+                  }
+                } : {
+                  borderColor: theme.palette.mode === 'dark' ? '#555' : '#ddd',
+                  color: theme.palette.text.primary,
+                  '&:hover': {
+                    borderColor: theme.palette.primary.main
+                  }
+                })
+              }}
+            >
+              Productos
+            </Button>
+          </Box>
+        </Box>
 
-        {/* Contenido de pestañas */}
-        {tabValue === 0 && (
+        {/* Contenido principal */}
+        {activeTab === 'services' && (
           <Grid container spacing={4}>
-            {services.map((service, index) => (
+            {servicesData.map((service) => (
               <Grid item xs={12} sm={6} md={4} key={service.id}>
                 <motion.div
-                  variants={fadeInUp}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ y: -5 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  <Card
-                    sx={{
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        transform: 'translateY(-5px)',
-                        boxShadow: `0 10px 25px ${theme.palette.primary.main}20`
-                      }
-                    }}
-                  >
-                    <CardContent sx={{ flexGrow: 1, textAlign: 'center', p: 4 }}>
-                      <Box
-                        sx={{
-                          display: 'inline-flex',
-                          p: 3,
-                          mb: 3,
-                          borderRadius: '50%',
-                          bgcolor: theme.palette.primary.light,
-                          color: theme.palette.primary.main
-                        }}
-                      >
+                  <Card sx={{
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    bgcolor: theme.palette.background.paper,
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    boxShadow: theme.shadows[2],
+                    border: `1px solid ${theme.palette.mode === 'dark' ? '#333' : '#eee'}`,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      boxShadow: theme.shadows[6]
+                    }
+                  }}>
+                    <Box sx={{
+                      bgcolor: theme.palette.primary.light,
+                      color: theme.palette.primary.main,
+                      p: 3,
+                      textAlign: 'center'
+                    }}>
+                      <Avatar sx={{
+                        bgcolor: theme.palette.primary.main,
+                        color: theme.palette.primary.contrastText,
+                        width: 60,
+                        height: 60,
+                        mx: 'auto',
+                        mb: 2
+                      }}>
                         {service.icon}
-                      </Box>
-                      <Typography
-                        variant="h5"
-                        component="h3"
-                        sx={{
-                          mb: 2,
-                          color: theme.palette.text.primary,
-                          fontWeight: 600
-                        }}
-                      >
+                      </Avatar>
+                      <Typography variant="h5" sx={{
+                        fontWeight: 700,
+                        color: theme.palette.primary.contrastText
+                      }}>
                         {service.title}
                       </Typography>
-                      <Typography
-                        variant="body1"
+                      <Chip
+                        label={service.category}
+                        size="small"
                         sx={{
-                          mb: 3,
-                          color: theme.palette.text.secondary
+                          mt: 1,
+                          bgcolor: theme.palette.mode === 'dark' ? '#333' : theme.palette.grey[200],
+                          color: theme.palette.text.primary
                         }}
-                      >
+                      />
+                    </Box>
+                    <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                      <Typography variant="body1" sx={{
+                        color: theme.palette.text.secondary,
+                        mb: 3
+                      }}>
                         {service.description}
                       </Typography>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Chip
-                          label={service.duration}
-                          sx={{ bgcolor: theme.palette.action.selected, fontWeight: 500 }}
-                        />
-                        <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                          ${service.price}
+                      <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        mb: 2
+                      }}>
+                        <Star sx={{
+                          color: theme.palette.warning.main,
+                          mr: 1
+                        }} />
+                        <Typography variant="body2" sx={{
+                          color: theme.palette.text.primary,
+                          fontWeight: 500
+                        }}>
+                          {service.rating} ({Math.floor(service.rating * 20)} reseñas)
+                        </Typography>
+                      </Box>
+                      <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        mb: 3
+                      }}>
+                        <AccessTime sx={{
+                          color: theme.palette.text.secondary,
+                          fontSize: '1rem'
+                        }} />
+                        <Typography variant="body2" sx={{
+                          color: theme.palette.text.secondary
+                        }}>
+                          {service.duration} min
                         </Typography>
                       </Box>
                     </CardContent>
-                    <Box sx={{ p: 2, textAlign: 'center' }}>
+                    <Box sx={{
+                      p: 3,
+                      borderTop: `1px solid ${theme.palette.divider}`,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}>
+                      <Typography variant="h5" sx={{
+                        fontWeight: 700,
+                        color: theme.palette.text.primary
+                      }}>
+                        ${service.price}
+                      </Typography>
                       <Button
                         variant="contained"
+                        startIcon={<CalendarToday />}
                         sx={{
-                          backgroundColor: theme.palette.secondary.main,
+                          borderRadius: '12px',
+                          bgcolor: theme.palette.secondary.main,
                           color: theme.palette.secondary.contrastText,
-                          px: 4,
                           fontWeight: 600,
-                          borderRadius: '8px',
                           '&:hover': {
-                            backgroundColor: theme.palette.secondary.dark
+                            bgcolor: theme.palette.secondary.dark
                           }
                         }}
                       >
@@ -285,92 +292,152 @@ const ServicesPage = () => {
           </Grid>
         )}
 
-        {tabValue === 1 && (
+        {activeTab === 'products' && (
           <Grid container spacing={4}>
-            {products.map((product, index) => (
-              <Grid item xs={12} sm={6} md={4} key={product.id}>
+            {productsData.map((product) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
                 <motion.div
-                  variants={fadeInUp}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ y: -5 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  <Card
-                    sx={{
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        transform: 'translateY(-5px)',
-                        boxShadow: `0 10px 25px ${theme.palette.primary.main}20`
-                      }
-                    }}
-                  >
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={product.image}
-                      alt={product.name}
-                      sx={{ objectFit: 'cover' }}
-                    />
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Chip
-                        label={product.category}
-                        size="small"
-                        sx={{ 
-                          mb: 2,
-                          bgcolor: theme.palette.primary.light,
-                          color: theme.palette.primary.main
+                  <Card sx={{
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    bgcolor: theme.palette.background.paper,
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    boxShadow: theme.shadows[2],
+                    border: `1px solid ${theme.palette.mode === 'dark' ? '#333' : '#eee'}`,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      boxShadow: theme.shadows[6]
+                    }
+                  }}>
+                    <Box sx={{ position: 'relative' }}>
+                      <CardMedia
+                        component="img"
+                        height="240"
+                        image={product.image}
+                        alt={product.name}
+                        sx={{
+                          objectFit: 'cover',
+                          filter: theme.palette.mode === 'dark' ? 'brightness(0.9)' : 'none'
                         }}
                       />
-                      <Typography
-                        variant="h5"
-                        component="h3"
-                        sx={{
-                          mb: 1,
-                          color: theme.palette.text.primary,
-                          fontWeight: 600
-                        }}
-                      >
+                      <Box sx={{
+                        position: 'absolute',
+                        top: 12,
+                        right: 12,
+                        zIndex: 2
+                      }}>
+                        <IconButton
+                          onClick={() => toggleWishlist(product.id)}
+                          sx={{
+                            bgcolor: theme.palette.background.paper,
+                            color: wishlist.includes(product.id) 
+                              ? theme.palette.error.main 
+                              : theme.palette.text.secondary,
+                            '&:hover': {
+                              bgcolor: theme.palette.background.paper
+                            }
+                          }}
+                        >
+                          <Favorite />
+                        </IconButton>
+                      </Box>
+                      {product.isNew && (
+                        <Box sx={{
+                          position: 'absolute',
+                          top: 12,
+                          left: 12,
+                          bgcolor: theme.palette.success.main,
+                          color: theme.palette.success.contrastText,
+                          px: 2,
+                          py: 0.5,
+                          borderRadius: '12px',
+                          zIndex: 2
+                        }}>
+                          <Typography variant="caption" sx={{
+                            fontWeight: 700,
+                            textTransform: 'uppercase'
+                          }}>
+                            Nuevo
+                          </Typography>
+                        </Box>
+                      )}
+                    </Box>
+                    <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Chip
+                          label={product.category}
+                          size="small"
+                          sx={{
+                            bgcolor: theme.palette.mode === 'dark' 
+                              ? theme.palette.primary.dark 
+                              : theme.palette.primary.light,
+                            color: theme.palette.primary.contrastText,
+                            fontWeight: 500
+                          }}
+                        />
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Star sx={{
+                            color: theme.palette.warning.main,
+                            fontSize: '1rem',
+                            mr: 0.5
+                          }} />
+                          <Typography variant="body2" sx={{
+                            color: theme.palette.text.primary,
+                            fontWeight: 500
+                          }}>
+                            {product.rating}
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Typography variant="h6" sx={{
+                        fontWeight: 700,
+                        color: theme.palette.text.primary,
+                        mb: 1
+                      }}>
                         {product.name}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          mb: 3,
-                          color: theme.palette.text.secondary
-                        }}
-                      >
+                      <Typography variant="body2" sx={{
+                        color: theme.palette.text.secondary,
+                        mb: 2
+                      }}>
                         {product.description}
                       </Typography>
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          fontWeight: 700,
-                          color: theme.palette.primary.main
-                        }}
-                      >
+                    </CardContent>
+                    <Box sx={{
+                      p: 3,
+                      borderTop: `1px solid ${theme.palette.divider}`,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}>
+                      <Typography variant="h5" sx={{
+                        fontWeight: 700,
+                        color: theme.palette.text.primary
+                      }}>
                         ${product.price.toFixed(2)}
                       </Typography>
-                    </CardContent>
-                    <Box sx={{ p: 2 }}>
                       <Button
-                        fullWidth
-                        variant="outlined"
+                        variant="contained"
                         startIcon={<ShoppingCart />}
                         sx={{
-                          borderColor: theme.palette.primary.main,
-                          color: theme.palette.primary.main,
+                          borderRadius: '12px',
+                          bgcolor: theme.palette.mode === 'dark' 
+                            ? theme.palette.secondary.dark 
+                            : theme.palette.secondary.main,
+                          color: theme.palette.secondary.contrastText,
                           fontWeight: 600,
                           '&:hover': {
-                            backgroundColor: theme.palette.primary.light,
-                            borderColor: theme.palette.primary.dark
+                            bgcolor: theme.palette.secondary.dark,
+                            boxShadow: `0 4px 12px ${theme.palette.secondary.main}30`
                           }
                         }}
                       >
-                        Añadir al carrito
+                        Añadir
                       </Button>
                     </Box>
                   </Card>
@@ -380,48 +447,48 @@ const ServicesPage = () => {
           </Grid>
         )}
 
-        {/* Sección destacada */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeInUp}
-          transition={{ delay: 0.2 }}
-        >
-          <Paper
+        {/* Call to Action */}
+        <Box sx={{
+          mt: 10,
+          textAlign: 'center',
+          bgcolor: theme.palette.primary.main,
+          p: 6,
+          borderRadius: '16px',
+          border: `1px solid ${theme.palette.divider}`
+        }}>
+          <Typography variant="h4" sx={{
+            fontWeight: 800,
+            mb: 2,
+            color: theme.palette.primary.contrastText
+          }}>
+            ¿Necesitas asesoramiento personalizado?
+          </Typography>
+          <Typography variant="body1" sx={{
+            color: theme.palette.primary.contrastText,
+            maxWidth: 700,
+            mx: 'auto',
+            mb: 4
+          }}>
+            Nuestros expertos están listos para recomendarte los mejores servicios y productos según tus necesidades.
+          </Typography>
+          <Button
+            variant="contained"
+            size="large"
             sx={{
-              mt: 6,
-              p: 4,
-              borderRadius: '12px',
-              background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-              color: '#fff',
-              textAlign: 'center'
+              borderRadius: '50px',
+              px: 6,
+              py: 1.5,
+              fontWeight: 700,
+              bgcolor: theme.palette.secondary.main,
+              color: theme.palette.secondary.contrastText,
+              '&:hover': {
+                bgcolor: theme.palette.secondary.dark
+              }
             }}
           >
-            <Typography variant="h4" sx={{ mb: 2, fontWeight: 700 }}>
-              ¿Necesitas asesoramiento profesional?
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 3, maxWidth: '700px', mx: 'auto' }}>
-              Nuestros barberos pueden recomendarte los mejores productos según tu tipo de cabello y barba.
-            </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: theme.palette.secondary.main,
-                color: theme.palette.secondary.contrastText,
-                px: 6,
-                py: 1.5,
-                fontWeight: 700,
-                borderRadius: '8px',
-                '&:hover': {
-                  backgroundColor: theme.palette.secondary.dark
-                }
-              }}
-            >
-              Consultar con un barbero
-            </Button>
-          </Paper>
-        </motion.div>
+            Contactar a un barbero
+          </Button>
+        </Box>
       </Container>
     </Box>
   );
