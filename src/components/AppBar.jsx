@@ -163,7 +163,7 @@ function Appbar({ darkMode, handleThemeChange }) {
             }}
             onClick={() => navigate("/")}
           >
-            Flowber
+            Urban Barber
           </Typography>
 
           <Box sx={{ display: { xs: "none", sm: "flex" }, gap: 2 }}>

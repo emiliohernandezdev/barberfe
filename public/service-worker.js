@@ -1,5 +1,5 @@
 // Cache name
-const CACHE_NAME = 'coffeeapp-v1';
+const CACHE_NAME = 'barbershopgt-v1';
 
 // Assets to cache
 const ASSETS_TO_CACHE = [
