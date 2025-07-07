@@ -1,218 +1,331 @@
-import { useContext, useState } from "react";
-import { Button, TextField, Typography, Box, useTheme, Paper, useMediaQuery, Snackbar, Link, InputAdornment, IconButton } from "@mui/material";
-import MuiAlert from "@mui/material/Alert";
-import { Coffee } from "@mui/icons-material";
-import { AuthService } from '../services/AuthService';
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
-import { useAuthStore } from "../stores/AuthStore";
-
-const loginSchema = Yup.object().shape({
-    email: Yup
-        .string()
-        .email("Correo electrónico inválido")
-        .required("Campo requerido"),
-    password: Yup
-        .string()
-        .min(6, "La contraseña debe tener al menos 6 caracteres")
-        .required("Campo requerido"),
-});
+import { 
+  Box, 
+  Typography, 
+  TextField, 
+  Button, 
+  Divider, 
+  IconButton,
+  InputAdornment,
+  Link,
+  useTheme,
+  useMediaQuery,
+  Grid,
+  Paper
+} from '@mui/material';
+import { Lock, Email, Visibility, VisibilityOff, Facebook, Google } from '@mui/icons-material';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 const LoginPage = () => {
-    const theme = useTheme();
-    const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState("");
-    const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-    const [showPassword, setShowPassword] = useState(false);
-    const login = useAuthStore(state => state.login);
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    // Configuración de React Hook Form
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-        reset,
-    } = useForm({
-        resolver: yupResolver(loginSchema),
-        mode: "onBlur",
-    });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Lógica de autenticación
+    console.log({ email, password });
+  };
 
-    const handleTogglePassword = () => {
-        setShowPassword((prev) => !prev);
-    };
-
-    const onSubmit = async (data) => {
-        try {
-            const response = await AuthService.login(data.email, data.password);
-            if (response.success) {
-                setSnackbarMessage("Inicio de sesión exitoso");
-                setSnackbarSeverity("success");
-                setOpenSnackbar(true);
-                login(response.token);
-                reset();
-            } else {
-                setSnackbarMessage(response.message);
-                setSnackbarSeverity("error");
-                setOpenSnackbar(true);
-            }
-        } catch (error) {
-            console.log(error)
-            setSnackbarMessage("Error al iniciar sesión");
-            setSnackbarSeverity("error");
-            setOpenSnackbar(true);
-        }
-    };
-
-    const handleCloseSnackbar = () => {
-        setOpenSnackbar(false);
-    };
-
-    return (
-        <Box
-            sx={{
-                minHeight: "100vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundImage: "url('https://wallpapers.com/images/featured/coffee-bean-wmhqt5jyr77cxa4v.jpg')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-            }}
+  return (
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: 3,
+        background: theme.palette.mode === 'dark' 
+          ? theme.palette.background.default 
+          : `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        style={{ width: '100%', maxWidth: '1000px' }}
+      >
+        <Paper
+          elevation={6}
+          sx={{
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            borderRadius: '16px',
+            overflow: 'hidden',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.15)'
+          }}
         >
+          {/* Sección de imagen */}
+          <Box
+            sx={{
+              width: isMobile ? '100%' : '45%',
+              height: isMobile ? '200px' : 'auto',
+              backgroundImage: 'url(https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              position: 'relative',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: `linear-gradient(to bottom, ${theme.palette.primary.main}20, ${theme.palette.primary.dark}90)`
+              }
+            }}
+          >
             <Box
-                sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: isSmallScreen ? "90%" : "800px",
-                    backgroundColor: theme.palette.background.paper,
-                    borderRadius: "12px",
-                    boxShadow: theme.shadows[10],
-                    overflow: "hidden",
-                }}
+              sx={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                p: 4,
+                color: '#fff',
+                zIndex: 2
+              }}
             >
-                {!isSmallScreen && (
-                    <Box
-                        sx={{
-                            flex: 1,
-                            backgroundImage: "url('https://images.unsplash.com/photo-1498804103079-a6351b050096?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')",
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                            height: "500px",
-                        }}
-                    />
-                )}
+              <Typography variant="h4" fontWeight={700} gutterBottom>
+                Barbería Urbana
+              </Typography>
+              <Typography variant="body1" sx={{ opacity: 0.9 }}>
+                Donde el estilo urbano se encuentra con la tradición barbera
+              </Typography>
+            </Box>
+          </Box>
 
-                <Paper
-                    elevation={0}
-                    sx={{
-                        flex: 1,
-                        padding: isSmallScreen ? "24px" : "32px",
-                        backgroundColor: theme.palette.background.paper,
-                    }}
-                >
-                    <Box sx={{ textAlign: "center", mb: 4 }}>
-                        <Coffee sx={{ fontSize: 48, color: theme.palette.primary.main }} />
-                        <Typography variant="h4" sx={{ fontWeight: 700, mt: 2 }}>
-                            ¡Bienvenido!
-                        </Typography>
-                        <Typography variant="body1" sx={{ mt: 1 }}>
-                            Inicia sesión para continuar
-                        </Typography>
-                    </Box>
+          {/* Sección del formulario */}
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              width: isMobile ? '100%' : '55%',
+              p: 4,
+              bgcolor: 'background.paper',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center'
+            }}
+          >
+            <Typography 
+              variant="h5" 
+              fontWeight={600} 
+              gutterBottom
+              sx={{ color: theme.palette.text.primary }}
+            >
+              Iniciar Sesión
+            </Typography>
+            
+            <Typography 
+              variant="body2" 
+              color="text.secondary" 
+              sx={{ mb: 4 }}
+            >
+              Ingresa tus credenciales para acceder a tu cuenta
+            </Typography>
 
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <TextField
-                            label="Correo Electrónico"
-                            type="email"
-                            variant="outlined"
-                            autoComplete="email"
-                            fullWidth
-                            {...register("email")}
-                            error={!!errors.email}
-                            helperText={errors.email?.message}
-                            sx={{ mb: 3 }}
-                            InputProps={{
-                                sx: {
-                                    borderRadius: "8px",
-                                },
-                            }}
-                        />
+            <TextField
+              fullWidth
+              label="Correo electrónico"
+              variant="outlined"
+              margin="normal"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Email color="primary" />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '12px',
+                  '& fieldset': {
+                    borderColor: theme.palette.mode === 'dark' ? '#444' : '#ddd',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: theme.palette.primary.main,
+                  },
+                },
+                '& .MuiInputLabel-root': {
+                  color: theme.palette.text.secondary,
+                  '&.Mui-focused': {
+                    color: theme.palette.primary.main,
+                  },
+                },
+                mb: 2
+              }}
+            />
 
-                        <TextField
-                            label="Contraseña"
-                            type={showPassword ? "text" : "password"}
-                            variant="outlined"
-                            fullWidth
-                            {...register("password")}
-                            error={!!errors.password}
-                            helperText={errors.password?.message}
-                            sx={{ mb: 3 }}
-                            InputProps={{
-                                sx: {
-                                    borderRadius: "8px",
-                                },
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            onClick={handleTogglePassword}
-                                            edge="end"
-                                            aria-label="toggle password visibility"
-                                        >
-                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
+            <TextField
+              fullWidth
+              label="Contraseña"
+              variant="outlined"
+              margin="normal"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Lock color="primary" />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                      sx={{ color: theme.palette.text.secondary }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '12px',
+                  '& fieldset': {
+                    borderColor: theme.palette.mode === 'dark' ? '#444' : '#ddd',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: theme.palette.primary.main,
+                  },
+                },
+                '& .MuiInputLabel-root': {
+                  color: theme.palette.text.secondary,
+                  '&.Mui-focused': {
+                    color: theme.palette.primary.main,
+                  },
+                },
+                mt: 2
+              }}
+            />
 
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            fullWidth
-                            disabled={isSubmitting}
-                            sx={{
-                                backgroundColor: theme.palette.primary.main,
-                                padding: "12px",
-                                borderRadius: "8px",
-                                fontSize: "1rem",
-                                fontWeight: "bold",
-                                textTransform: "none",
-                                ":hover": {
-                                    backgroundColor: theme.palette.primary.dark,
-                                },
-                            }}
-                        >
-                            {isSubmitting ? "Iniciando sesión..." : "Iniciar Sesión"}
-                        </Button>
-                    </form>
-
-                    <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-                        <Link href="/recover" variant="body2" sx={{ textDecoration: "none", color: theme.palette.text.primary }}>
-                            ¿Olvidaste tu contraseña?
-                        </Link>
-                        <Link href="/signup" variant="body2" sx={{ textDecoration: "none", color: theme.palette.text.primary }}>
-                            Crear cuenta
-                        </Link>
-                    </Box>
-                </Paper>
+            <Box sx={{ textAlign: 'right', mt: 1 }}>
+              <Link 
+                href="#" 
+                variant="body2" 
+                sx={{ 
+                  color: theme.palette.text.secondary,
+                  '&:hover': {
+                    color: theme.palette.primary.main
+                  }
+                }}
+              >
+                ¿Olvidaste tu contraseña?
+              </Link>
             </Box>
 
-            <Snackbar
-                open={openSnackbar}
-                autoHideDuration={3000}
-                onClose={handleCloseSnackbar}
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            <Button
+              fullWidth
+              variant="contained"
+              size="large"
+              type="submit"
+              sx={{
+                mt: 3,
+                py: 1.5,
+                borderRadius: '12px',
+                fontWeight: 600,
+                fontSize: '1rem',
+                textTransform: 'none',
+                background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+                boxShadow: 'none',
+                '&:hover': {
+                  boxShadow: `0 5px 15px ${theme.palette.primary.main}40`,
+                  transform: 'translateY(-2px)'
+                },
+                transition: 'all 0.3s ease'
+              }}
             >
-                <MuiAlert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
-                    {snackbarMessage}
-                </MuiAlert>
-            </Snackbar>
-        </Box>
-    );
+              Iniciar sesión
+            </Button>
+
+            <Divider sx={{ my: 3 }}>
+              <Typography variant="body2" sx={{ 
+                color: theme.palette.text.secondary,
+                px: 2
+              }}>
+                o continúa con
+              </Typography>
+            </Divider>
+
+            <Box sx={{ 
+              display: 'flex', 
+              gap: 2,
+              mb: 3
+            }}>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<Google />}
+                sx={{
+                  py: 1.5,
+                  borderRadius: '12px',
+                  textTransform: 'none',
+                  borderColor: theme.palette.mode === 'dark' ? '#444' : '#ddd',
+                  color: theme.palette.text.primary,
+                  '&:hover': {
+                    borderColor: theme.palette.primary.main,
+                    backgroundColor: theme.palette.action.hover
+                  }
+                }}
+              >
+                Google
+              </Button>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<Facebook />}
+                sx={{
+                  py: 1.5,
+                  borderRadius: '12px',
+                  textTransform: 'none',
+                  borderColor: theme.palette.mode === 'dark' ? '#444' : '#ddd',
+                  color: theme.palette.text.primary,
+                  '&:hover': {
+                    borderColor: theme.palette.primary.main,
+                    backgroundColor: theme.palette.action.hover
+                  }
+                }}
+              >
+                Facebook
+              </Button>
+            </Box>
+
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: theme.palette.text.secondary,
+                textAlign: 'center',
+                mt: 2
+              }}
+            >
+              ¿No tienes una cuenta?{' '}
+              <Link 
+                href="#" 
+                sx={{ 
+                  fontWeight: 600,
+                  color: theme.palette.primary.main,
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'underline'
+                  }
+                }}
+              >
+                Regístrate
+              </Link>
+            </Typography>
+          </Box>
+        </Paper>
+      </motion.div>
+    </Box>
+  );
 };
 
 export default LoginPage;

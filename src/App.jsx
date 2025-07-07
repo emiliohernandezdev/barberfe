@@ -13,6 +13,8 @@ import { setupInterceptors } from './services/ApiConfig';
 import ScrollToTop from './components/ScrollToTop';
 import { useThemeStore } from './stores/ThemeStore';
 import { ParallaxProvider } from 'react-scroll-parallax';
+import LoginPage from './pages/LoginPage';
+import ServicesPage from './pages/ServicesPage';
 
 const AppContent = () => {
   const { setLoading } = useContext(LoaderContext);
@@ -42,6 +44,8 @@ const AppContent = () => {
 
               <Routes>
                 <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/services" element={<ServicesPage />} />
               </Routes>
             </Router>
           </div>

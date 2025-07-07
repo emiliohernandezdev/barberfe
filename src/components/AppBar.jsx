@@ -71,7 +71,7 @@ function Appbar({ darkMode, handleThemeChange }) {
 
   const navItems = [
     { label: "Inicio", path: "/", icon: <HomeIcon /> },
-    { label: "Servicios", path: "/servicios", icon: <ContentCutIcon /> },
+    { label: "Servicios", path: "/services", icon: <ContentCutIcon /> },
   ];
 
   const drawer = (
@@ -85,17 +85,6 @@ function Appbar({ darkMode, handleThemeChange }) {
             </ListItemButton>
           </ListItem>
         ))}
-
-        <ListItem disablePadding>
-          <ListItemButton onClick={handleCartClick}>
-            <ListItemIcon>
-              <Badge badgeContent={cart.length} color="error">
-                <ShoppingCartIcon />
-              </Badge>
-            </ListItemIcon>
-            <ListItemText primary="Carrito" />
-          </ListItemButton>
-        </ListItem>
 
         {isAuthenticated ? (
           <>
@@ -178,12 +167,6 @@ function Appbar({ darkMode, handleThemeChange }) {
                 {item.label}
               </Button>
             ))}
-
-            <IconButton color="inherit" onClick={handleCartClick}>
-              <Badge badgeContent={cart.length} color="error">
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
 
             {isAuthenticated ? (
               <>
